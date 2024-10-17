@@ -120,15 +120,50 @@ LIMIT 1;
 # -- EJERCICIO 11
 # Obtener los servicios que tienen un ingreso total superior a un cierto monto (elegir).
 
+SELECT SUM(total) as monto_total,
+servicios.nombre as nombre_servicio
+FROM facturas
+JOIN servicios ON servicios.id_servicio = facturas.id_servicio
+GROUP BY servicios.nombre
+HAVING monto_total > 60; # having se usa después de group by
+
 
 # -- EJERCICIO 12
 # Obtener las reservas de un cliente específico (tratar de crear una store procedure).
+
+#DELIMITER //
+#CREATE PROCEDURE obtenerReservas(IN nombre_cliente VARCHAR(100))
+#BEGIN
+	SELECT clientes.nombre as nombre_cliente,
+	computadoras.nombre as nombre_computadora,
+    reservas.fecha_reserva
+	FROM reservas
+	JOIN computadoras ON reservas.id_computadora = computadoras.id_computadora
+	JOIN clientes ON clientes.id_cliente = reservas.id_cliente
+	WHERE clientes.nombre = nombre_cliente;
+#END
+#//
+    
+# CALL obtenerReservas('Juan Pérez');
 
 
 #  -- EJERCICIO 13
 # Obtener todos los clientes y la duración total de sus revervas.
 
+SELECT SUM(duracion_minutos) as duracion_total,
+clientes.nombre as nombre_cliente
+FROM clientes
+LEFT JOIN reservas ON clientes.id_cliente = reservas.id_cliente
+GROUP BY nombre_cliente;
+
 
 # -- EJERCICIO 14
 # Obtener las computadoras y el tiempo total de reservas.
+
+SELECT computadoras.nombre AS nombre_computadora,
+SUM(duracion_minutos) AS duracion_total
+FROM reservas
+JOIN computadoras ON computadoras.id_computadora = reservas.id_computadora
+GROUP by nombre_computadora
+ORDER BY duracion_total DESC;
 
