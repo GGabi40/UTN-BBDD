@@ -144,6 +144,8 @@ BEGIN
 		libros
 	WHERE
 		id = p_id_libro;
+	
+    START TRANSACTION;
     
     IF (libro_disponible) THEN
 		SELECT 'Este libro no fue reservado.'
@@ -163,7 +165,7 @@ DELIMITER ;
 SELECT * FROM libros;
 SELECT * FROM prestamos;
 
-CALL sp_devolver_libro(1);
+CALL sp_devolver_libro(5);
 
 -- ----- --
 
